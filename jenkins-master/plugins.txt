@@ -1,0 +1,16 @@
+authentication-tokens:1.2
+credentials:1.24
+docker-commons:1.2
+docker-custom-build-environment:1.6.4
+git:2.4.1
+git-client:1.19.1
+github:1.14.2
+github-api:1.71
+mailer:1.16
+matrix-project:1.6
+parameterized-trigger:2.30
+plain-credentials:1.1
+scm-api:1.0
+ssh-credentials:1.11
+timestamper:1.7.2
+token-macro:1.12.1
