@@ -5,6 +5,11 @@ Playing around w/Docker.
 ### Learn
 * Riot Games eng blog: http://engineering.riotgames.com/
 * Docker in Docker: https://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/
+  * Issue in official Jenkins CI container: http://stackoverflow.com/questions/22135897/access-docker-socket-within-container
+    * > docker exec -u root XXXX /bin/chmod a+s /usr/local/bin/docker
+    * > docker exec -i -t XXXX /bin/bash
+  * Fail to start containers: http://stackoverflow.com/questions/33399288/cloudbees-jenkins-plugin-fails-to-start-containers
+    * Needs to support volumes-from
 
 
 ### Commands for this project
