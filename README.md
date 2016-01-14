@@ -7,7 +7,7 @@ Playing around w/Docker.
 * Docker in Docker: https://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/
   * Issue in official Jenkins CI container: http://stackoverflow.com/questions/22135897/access-docker-socket-within-container
     * > docker exec -u root XXXX /bin/chmod a+s /usr/local/bin/docker
-    * > docker exec -i -t XXXX /bin/bash
+    * **note** solved above with prepare_jenkins.sh script
   * Fail to start containers: http://stackoverflow.com/questions/33399288/cloudbees-jenkins-plugin-fails-to-start-containers
     * Needs to support volumes-from
 
@@ -40,6 +40,9 @@ https://github.com/wsargent/docker-cheat-sheet
 
 #### Remove all containers
     docker rm $(docker ps -aq --no-trunc)
+
+#### Open bash session in container
+    docker exec -i -t CONTAINER_NAME /bin/bash
 
 
 ### TODO

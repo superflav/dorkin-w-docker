@@ -4,7 +4,7 @@ jenkinsdata:
 jenkinsmaster:
   build: jenkins-master
   volumes:
-    - /var/run/docker.sock:/var/run/docker/sock
+    - /var/run/docker.sock:/var/run/docker.sock
     - /usr/local/bin/docker:/usr/local/bin/docker
   volumes_from:
     - jenkinsdata

@@ -1,4 +1,5 @@
 authentication-tokens:1.2
+build-name-setter:1.5.1
 credentials:1.24
 docker-commons:1.2
 docker-custom-build-environment:1.6.4
