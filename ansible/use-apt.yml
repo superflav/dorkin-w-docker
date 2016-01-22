@@ -1,0 +1,6 @@
+
+- name: install ssh
+  apt: name=ssh update_cache=yes state=present force=yes
+
+- name: install rsync
+  apt: name=rsync update_cache=yes state=present force=yes

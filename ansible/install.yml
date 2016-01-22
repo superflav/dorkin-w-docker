@@ -1,0 +1,52 @@
+####
+## downloads
+####
+- name: Download Java Checksum
+  get_url:
+    url: "http://artifactory.corp.atscale.com/ext-packages/java/{{ java_filename }}.md5"
+    dest: "{{ download_dir }}/{{ java_filename }}.md5"
+    force: yes
+    mode: 0440
+#   register: foo_result
+#
+# - debug: var=foo_result
+# - debug: var=foo_result.md5sum
+
+- name: Download Java
+  get_url:
+    url: "http://artifactory.corp.atscale.com/ext-packages/java/{{ java_filename }}"
+    checksum: "md5:{{ lookup('file', '{{ download_dir }}/{{ java_filename }}.md5') }}"
+    dest: "{{ download_dir }}/{{ java_filename }}"
+    mode: 0440
+#   register: foo_result
+#
+# - debug: var=foo_result
+# - debug: var=foo_result.md5sum
+
+- name: Unpack Java
+  unarchive:
+    src: "{{ download_dir }}/{{ java_filename }}"
+    copy: no
+    dest: "{{ share_dir }}"
+
+
+- name: Download Hadoop Checksum
+  get_url:
+    url: "https://dist.apache.org/repos/dist/release/hadoop/common/hadoop-{{ hadoop_version }}/{{ hadoop_filename }}.mds"
+    dest: "{{ download_dir }}/{{ hadoop_filename }}.mds"
+    force: yes
+    mode: 0440
+
+- name: Download Hadoop
+  get_url:
+    url: "https://dist.apache.org/repos/dist/release/hadoop/common/hadoop-{{ hadoop_version }}/{{ hadoop_filename }}"
+    # Turn back on when moved into artifactory
+    # checksum: "sha256:{{ lookup('file', '{{ download_dir }}/{{ hadoop_filename }}.mds') }}"
+    dest: "{{ download_dir }}/{{ hadoop_filename }}"
+    mode: 0440
+
+- name: Unpack Hadoop
+  unarchive:
+    src: "{{ download_dir }}/{{ hadoop_filename }}"
+    copy: no
+    dest: "{{ share_dir }}"

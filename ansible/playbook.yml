@@ -1,0 +1,58 @@
+---
+# hadoop single node install: https://hadoop.apache.org/docs/r1.2.1/single_node_setup.html
+
+- hosts: all
+  vars:
+    java_filename: jdk-8u71-linux-x64.gz
+    java_home: blahblah
+
+    hadoop_version: 2.6.3
+    hadoop_filename: "hadoop-{{ hadoop_version }}.tar.gz"
+
+    download_dir: /tmp/download
+    share_dir: /usr/local/share
+
+
+  tasks:
+    - name: Create directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0755
+      with_items:
+        - "{{ download_dir }}"
+        - "{{ share_dir }}"
+
+
+    - name: use apt
+      include: use-apt.yml
+
+
+    - name: install
+      include: install.yml
+
+
+    - name: blah
+      template:
+        src: templates/fraser.conf.j2
+        dest: /tmp/fraser.conf
+
+
+    - name: Clean up files & directories that are no longer needed
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - /var/lib/apt/lists/
+        - /var/tmp/
+        - "{{ download_dir }}"
+
+
+####
+## TODO
+####
+# script to fire up hadoop & friends
+
+# environment:
+#   PATH: "{{ ansible_env.PATH }}:/thingy/bin"
+#   JAVA_HOME: /usr/java/jre1.8.0_51
