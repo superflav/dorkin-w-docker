@@ -1,4 +1,6 @@
-
+####
+## install required packages using apt
+####
 - name: install ssh
   apt: name=ssh update_cache=yes state=present force=yes
 

@@ -1,0 +1,60 @@
+####
+## download & install hadoop
+####
+- name: Download Hadoop Checksum
+  get_url:
+    url: "https://dist.apache.org/repos/dist/release/hadoop/common/hadoop-{{ hadoop_version }}/{{ hadoop_download_file }}.mds"
+    dest: "{{ download_dir }}/{{ hadoop_download_file }}.mds"
+    force: yes
+    mode: 0440
+
+- name: Download Hadoop
+  get_url:
+    url: "https://dist.apache.org/repos/dist/release/hadoop/common/hadoop-{{ hadoop_version }}/{{ hadoop_download_file }}"
+    # Turn back on when moved into artifactory
+    # checksum: "sha256:{{ lookup('file', '{{ download_dir }}/{{ hadoop_download_file }}.mds') }}"
+    dest: "{{ download_dir }}/{{ hadoop_download_file }}"
+    mode: 0440
+
+- name: Unpack Hadoop
+  unarchive:
+    src: "{{ download_dir }}/{{ hadoop_download_file }}"
+    copy: no
+    dest: "{{ share_dir }}"
+
+
+- name: Apply Hadoop config files
+  template:
+    src: "templates/hadoop-{{ hadoop_version }}/etc/hadoop/{{ item }}.j2"
+    dest: "{{ hadoop_conf_dir }}/{{ item }}"
+    owner: hadoop
+    group: hadoop
+    mode: 0600
+  with_items:
+    - core-site.xml
+    - hadoop-env.sh
+    - hdfs-site.xml
+    - mapred-site.xml
+    - yarn-site.xml
+
+- name: Create missing Hadoop directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: hadoop
+    group: hadoop
+    mode: 0755
+  with_items:
+    - "{{ hadoop_home }}/logs"
+
+# $ bin/hdfs namenode -format -nonInteractive
+# $ sbin/start-dfs.sh
+#
+# NameNode - http://localhost:50070/
+#
+# $ bin/hdfs dfs -mkdir /user/hadoop
+#
+#
+# sbin/start-yarn.sh
+#
+# ResourceManager - http://localhost:8088/

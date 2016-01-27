@@ -3,14 +3,17 @@
 
 - hosts: all
   vars:
-    java_filename: jdk-8u71-linux-x64.gz
-    java_home: blahblah
-
-    hadoop_version: 2.6.3
-    hadoop_filename: "hadoop-{{ hadoop_version }}.tar.gz"
-
     download_dir: /tmp/download
     share_dir: /usr/local/share
+
+    java_version: 1.8.0_71
+    java_download_file: jdk-8u71-linux-x64.gz
+    java_home: "{{ share_dir }}/jdk{{ java_version }}"
+
+    hadoop_version: 2.6.3
+    hadoop_download_file: "hadoop-{{ hadoop_version }}.tar.gz"
+    hadoop_home: "{{ share_dir }}/hadoop-{{ hadoop_version }}"
+    hadoop_conf_dir: "{{ hadoop_home }}/etc/hadoop"
 
 
   tasks:
@@ -27,15 +30,16 @@
     - name: use apt
       include: use-apt.yml
 
+    - name: create users
+      include: create-users.yml
 
-    - name: install
-      include: install.yml
 
+    - name: install-java
+      include: "install-java.yml"
 
-    - name: blah
-      template:
-        src: templates/fraser.conf.j2
-        dest: /tmp/fraser.conf
+    - name: install-hadoop
+      include: "install-hadoop.yml"
+
 
 
     - name: Clean up files & directories that are no longer needed
@@ -47,11 +51,21 @@
         - /var/tmp/
         - "{{ download_dir }}"
 
+    - name: Drop docker-entrypoint.sh into place
+      template:
+        src: templates/bin/docker-entrypoint.sh.j2
+        dest: /usr/local/bin/docker-entrypoint.sh
+        mode: 0755
 
 ####
 ## TODO
 ####
 # script to fire up hadoop & friends
+# ssh has to be running when node comes up
+# configure for pseudo-distributed operation
+
+
+
 
 # environment:
 #   PATH: "{{ ansible_env.PATH }}:/thingy/bin"

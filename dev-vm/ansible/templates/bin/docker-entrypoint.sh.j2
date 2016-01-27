@@ -1,0 +1,29 @@
+#!/bin/bash
+set -e
+
+# start system services
+service ssh start
+
+# start hadoop
+export JAVA_HOME={{ java_home }}
+export HADOOP_HOME={{ hadoop_home }}
+export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+
+echo "JAVA_HOME=$JAVA_HOME"
+echo "HADOOP_HOME=$HADOOP_HOME"
+echo "HADOOP_CONF_DIR=$HADOOP_CONF_DIR"
+
+sudo -u hadoop /bin/bash << EOF
+  $HADOOP_HOME/bin/hdfs namenode -format -nonInteractive
+  $HADOOP_HOME/sbin/start-dfs.sh
+  $HADOOP_HOME/bin/hdfs dfs -mkdir /user/hadoop
+  $HADOOP_HOME/sbin/start-yarn.sh
+EOF
+
+if [[ $1 == "-daemon" ]]; then
+  # hack to daemonize this script, preventing the docker container from exiting
+  tail -f /dev/null
+else
+  # run what was passed in via docker run's COMMAND attribute
+  exec "$@"
+fi

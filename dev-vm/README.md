@@ -1,0 +1,3 @@
+# Dockered Hadoop
+
+http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/SingleCluster.html

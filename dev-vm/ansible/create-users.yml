@@ -1,0 +1,49 @@
+
+
+
+
+- name: Create 'hadoop' user group
+  group: name=hadoop state=present
+
+- name: Create 'hadoop' user
+  user:
+    name: hadoop
+    group: hadoop
+    groups: sudo
+    append: yes
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa
+
+
+## TODO: add known_hosts entry
+## http://docs.ansible.com/ansible/known_hosts_module.html
+
+- name: Add authorized_key for 'hadoop' user
+  authorized_key:
+    user: hadoop
+    key: "{{ lookup('file', '/home/hadoop/.ssh/id_rsa.pub') }}"
+
+- name: Create .ssh/config file for 'hadoop' user
+  template:
+    src: templates/ssh/config.j2
+    dest: /home/hadoop/.ssh/config
+    owner: hadoop
+    group: hadoop
+    mode: 0600
+
+
+# - name: Create SSH public host key for localhost
+#   shell: ssh-keyscan -t rsa localhost >> /home/hadoop/.ssh/localhost.pub
+
+# - name: Add localhost to known hosts
+#   known_hosts:
+#     name: localhost
+#     path: /home/hadoop/.ssh/known_hosts
+#     key: "{{ lookup('file', '/home/hadoop/.ssh/localhost.pub') }}"
+
+
+# - shell: ssh-keyscan -t rsa github.com
+#   register: result
+#
+# - debug: var=result

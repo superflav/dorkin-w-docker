@@ -60,7 +60,7 @@ https://github.com/wsargent/docker-cheat-sheet
     docker rm $(docker ps -aq --no-trunc)
 
 #### Remove all untagged images
-    docker rmi $(docker images | grep "^<none>" | awk "{print $3}")
+    docker rmi $(docker images | grep "^<none>" | awk '{print $3}')
 
 #### Open bash session in container
     docker exec -i -t CONTAINER_NAME /bin/bash

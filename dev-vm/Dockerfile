@@ -4,7 +4,7 @@ FROM williamyeh/ansible:ubuntu14.04-onbuild
 #ENV REQUIREMENTS  requirements.yml
 
 # ==> Specify playbook filename;      default = "playbook.yml"
-ENV PLAYBOOK playbook.yml
+ENV PLAYBOOK ansible/playbook.yml
 
 # ==> Specify inventory filename;     default = "/etc/ansible/hosts"
 #ENV INVENTORY     inventory.ini
@@ -12,7 +12,11 @@ ENV PLAYBOOK playbook.yml
 # ==> Executing Ansible (with a simple wrapper)...
 RUN ansible-playbook-wrapper
 
+# ==> Clean out no longer needed docker-ansible files
+WORKDIR  /tmp
+RUN rm -rf ansible/ Dockerfile Makefile README.md
+WORKDIR  /
 
-
-
-ENTRYPOINT 'bash'
+# ==> Start container w/entrypoint script, defaulting it to running as a daemon
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["-daemon"]
