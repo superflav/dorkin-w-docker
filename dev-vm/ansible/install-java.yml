@@ -1,6 +1,4 @@
-####
-## download & install java
-####
+---
 - name: Download Java Checksum
   get_url:
     url: "http://artifactory.corp.atscale.com/ext-packages/java/{{ java_download_file }}.md5"

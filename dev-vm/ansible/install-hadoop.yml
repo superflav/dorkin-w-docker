@@ -1,6 +1,4 @@
-####
-## download & install hadoop
-####
+---
 - name: Download Hadoop Checksum
   get_url:
     url: "https://dist.apache.org/repos/dist/release/hadoop/common/hadoop-{{ hadoop_version }}/{{ hadoop_download_file }}.mds"
@@ -21,7 +19,6 @@
     src: "{{ download_dir }}/{{ hadoop_download_file }}"
     copy: no
     dest: "{{ share_dir }}"
-
 
 - name: Apply Hadoop config files
   template:

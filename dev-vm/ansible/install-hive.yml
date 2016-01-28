@@ -1,0 +1,20 @@
+---
+- name: Download Hive Checksum
+  get_url:
+    url: "http://artifactory.corp.atscale.com/ext-packages/hive/{{ hive_download_file }}.md5"
+    dest: "{{ download_dir }}/{{ hive_download_file }}.md5"
+    force: yes
+    mode: 0440
+
+- name: Download Hive
+  get_url:
+    url: "http://artifactory.corp.atscale.com/ext-packages/hive/{{ hive_download_file }}"
+    checksum: "md5:{{ lookup('file', '{{ download_dir }}/{{ hive_download_file }}.md5') }}"
+    dest: "{{ download_dir }}/{{ hive_download_file }}"
+    mode: 0440
+
+- name: Unpack Hive
+  unarchive:
+    src: "{{ download_dir }}/{{ hive_download_file }}"
+    copy: no
+    dest: "{{ share_dir }}"

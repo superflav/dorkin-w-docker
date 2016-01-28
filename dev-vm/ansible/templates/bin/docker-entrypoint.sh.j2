@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 # start system services
 service ssh start
@@ -13,12 +12,28 @@ echo "JAVA_HOME=$JAVA_HOME"
 echo "HADOOP_HOME=$HADOOP_HOME"
 echo "HADOOP_CONF_DIR=$HADOOP_CONF_DIR"
 
-sudo -u hadoop /bin/bash << EOF
-  $HADOOP_HOME/bin/hdfs namenode -format -nonInteractive
-  $HADOOP_HOME/sbin/start-dfs.sh
-  $HADOOP_HOME/bin/hdfs dfs -mkdir /user/hadoop
-  $HADOOP_HOME/sbin/start-yarn.sh
-EOF
+COMMANDS=()
+COMMANDS+=("$HADOOP_HOME/bin/hdfs namenode -format -nonInteractive")
+COMMANDS+=("$HADOOP_HOME/sbin/start-dfs.sh")
+COMMANDS+=("$HADOOP_HOME/bin/hdfs dfs -mkdir /user")
+COMMANDS+=("$HADOOP_HOME/bin/hdfs dfs -mkdir /user/hadoop")
+COMMANDS+=("$HADOOP_HOME/sbin/start-yarn.sh")
+for command_to_run in "${COMMANDS[@]}"
+do
+  echo ""
+  echo "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
+  echo "RUNNING: ${command_to_run}"
+  echo "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
+  su - hadoop -c "${command_to_run}"
+  command_status=$?
+  if [ ${command_status} -ne 0 ]
+  then
+    echo ""
+    echo "ERROR!"
+    echo "Command '${command_to_run}' failed with status '${command_status}'"
+    echo ""
+  fi
+done
 
 if [[ $1 == "-daemon" ]]; then
   # hack to daemonize this script, preventing the docker container from exiting

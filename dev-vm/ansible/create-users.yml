@@ -1,9 +1,8 @@
-
-
-
-
+---
 - name: Create 'hadoop' user group
-  group: name=hadoop state=present
+  group:
+    name: hadoop
+    state: present
 
 - name: Create 'hadoop' user
   user:
