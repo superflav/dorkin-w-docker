@@ -18,3 +18,27 @@
     src: "{{ download_dir }}/{{ hive_download_file }}"
     copy: no
     dest: "{{ share_dir }}"
+
+- name: Symlink MySQL connector into Hive lib directory
+  file:
+    src: /usr/share/java/mysql-connector-java.jar
+    dest: "{{ hive_lib_dir }}/mysql-connector-java.jar"
+    state: link
+
+- name: Apply Hive config files
+  template:
+    src: "templates/hive-{{ hive_version }}/conf/{{ item }}.j2"
+    dest: "{{ hive_conf_dir }}/{{ item }}"
+    owner: hive
+    group: hadoop
+    mode: 0644
+  with_items:
+    - hive-site.xml
+
+- name: Chown Hive to hive user
+  file:
+    path: "{{ hive_home }}"
+    state: directory
+    owner: hive
+    group: hadoop
+    recurse: yes

@@ -15,10 +15,15 @@
     hadoop_home: "{{ share_dir }}/hadoop-{{ hadoop_version }}"
     hadoop_conf_dir: "{{ hadoop_home }}/etc/hadoop"
 
-    hive_download_version: 1.2.1
-    hive_download_file: apache-hive-{{ hive_download_version }}-bin.tar.gz
-    hive_home: "{{ share_dir }}/apache-hive-{{ hive_download_version }}"
+    hive_version: 1.2.1
+    hive_download_file: apache-hive-{{ hive_version }}-bin.tar.gz
+    hive_home: "{{ share_dir }}/apache-hive-{{ hive_version }}-bin"
+    hive_conf_dir: "{{ hive_home }}/conf"
+    hive_lib_dir: "{{ hive_home }}/lib"
 
+    mysql_hive_metastore_db: metastore
+    mysql_hive_metastore_user: hive
+    mysql_hive_metastore_password: hive
 
   tasks:
     - name: Create directories

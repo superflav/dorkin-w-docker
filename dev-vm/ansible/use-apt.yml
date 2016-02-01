@@ -1,8 +1,19 @@
 ####
 ## install required packages using apt
 ####
+- name: install python-apt
+  apt: name=python-apt update_cache=yes state=present force=yes
+
 - name: install ssh
   apt: name=ssh update_cache=yes state=present force=yes
 
 - name: install rsync
   apt: name=rsync update_cache=yes state=present force=yes
+
+- name: install MySQL
+  apt: name={{ item }} update_cache=yes state=present force=yes
+  with_items:
+    - python-mysqldb
+    - mysql-server
+    - mysql-client
+    - libmysql-java

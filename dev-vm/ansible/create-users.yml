@@ -1,5 +1,5 @@
 ---
-- name: Create 'hadoop' user group
+- name: Create 'hadoop' group
   group:
     name: hadoop
     state: present
@@ -30,6 +30,11 @@
     owner: hadoop
     group: hadoop
     mode: 0600
+
+- name: Create 'hive' user
+  user:
+    name: hive
+    group: hadoop
 
 
 # - name: Create SSH public host key for localhost
