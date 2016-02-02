@@ -21,6 +21,8 @@
     hive_conf_dir: "{{ hive_home }}/conf"
     hive_lib_dir: "{{ hive_home }}/lib"
 
+    impala_conf_dir: /etc/impala/conf
+
     mysql_hive_metastore_db: metastore
     mysql_hive_metastore_user: hive
     mysql_hive_metastore_password: hive
@@ -35,20 +37,24 @@
         - "{{ download_dir }}"
         - "{{ share_dir }}"
 
-    - name: use apt
+    - name: Install packages using apt
       include: use-apt.yml
+      when: ansible_pkg_mgr == "apt"
 
-    - name: create users
+    - name: Create users
       include: create-users.yml
 
-    - name: install-java
+    - name: Install-java
       include: "install-java.yml"
 
-    - name: install-hadoop
+    - name: Install-hadoop
       include: "install-hadoop.yml"
 
-    - name: install-hive
+    - name: Install-hive
       include: "install-hive.yml"
+
+    - name: Install-impala
+      include: "install-impala.yml"
 
     - name: Clean up files & directories that are no longer needed
       file:

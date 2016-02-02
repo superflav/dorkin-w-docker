@@ -1,0 +1,83 @@
+---
+
+- name: Download Cloudera apt list file for Ubuntu trusty (14.04)
+  get_url:
+    url: "https://archive.cloudera.com/cdh5/ubuntu/trusty/amd64/cdh/cloudera.list"
+    dest: "/etc/apt/sources.list.d/"
+    mode: 0644
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'
+
+- name: Download Cloudera apt key file for Ubuntu trusty (14.04)
+  apt_key: url=http://archive.cloudera.com/cdh5/ubuntu/trusty/amd64/cdh/archive.key state=present
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'trusty'
+
+- name: Download Cloudera apt list file for Ubuntu precise (12.04)
+  get_url:
+    url: "https://archive.cloudera.com/cdh5/ubuntu/precise/amd64/cdh/cloudera.list"
+    dest: "/etc/apt/sources.list.d/"
+    mode: 0644
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'precise'
+
+- name: Download Cloudera apt key file for Ubuntu precise (12.04)
+  apt_key: url=http://archive.cloudera.com/cdh5/ubuntu/precise/amd64/cdh/archive.key state=present
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release == 'precise'
+
+- name: Download Cloudera apt list file for Debian wheezy (7.0 and 7.1)
+  get_url:
+    url: "https://archive.cloudera.com/cdh5/debian/wheezy/amd64/cdh/cloudera.list"
+    dest: "/etc/apt/sources.list.d/"
+    mode: 0644
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '7'
+
+- name: Download Cloudera apt key file for Debian wheezy (7.0 and 7.1)
+  apt_key: url=http://archive.cloudera.com/cdh5/debian/wheezy/amd64/cdh/archive.key state=present
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '7'
+
+- name: Download Cloudera repo file for RHEL or CentOS 6
+  get_url:
+    url: "https://archive.cloudera.com/cdh5/redhat/6/x86_64/cdh/cloudera-manager.repo"
+    dest: "/etc/yum.repos.d/"
+    mode: 0644
+  when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and ansible_distribution_major_version == '6'
+
+- name: Download Cloudera repo file for RHEL or CentOS 7
+  get_url:
+    url: "https://archive.cloudera.com/cdh5/redhat/7/x86_64/cdh/cloudera-manager.repo"
+    dest: "/etc/yum.repos.d/"
+    mode: 0644
+  when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and ansible_distribution_major_version == '7'
+
+# TODO: change to package commands
+- name: Install the Cloudera Impala Packages for Debian OS Family
+  apt: name={{ item }} update_cache=yes state=present force=yes
+  # ignore_errors: True
+  # async: 60
+  # poll: 60
+  with_items:
+    - impala
+    - impala-server
+    - impala-catalog
+    - impala-state-store
+    - impala-shell
+  when: ansible_os_family == 'Debian'
+
+- name: Apply Hive config files
+  template:
+    src: "templates/hive-{{ hive_version }}/conf/{{ item }}.j2"
+    dest: "{{ impala_conf_dir }}/{{ item }}"
+    # owner: hive
+    # group: hadoop
+    mode: 0644
+  with_items:
+    - hive-site.xml
+
+- name: Apply Hadoop config files
+  template:
+    src: "templates/hadoop-{{ hadoop_version }}/etc/hadoop/{{ item }}.j2"
+    dest: "{{ impala_conf_dir }}/{{ item }}"
+    # owner: hadoop
+    # group: hadoop
+    mode: 0644
+  with_items:
+    - core-site.xml
+    - hdfs-site.xml

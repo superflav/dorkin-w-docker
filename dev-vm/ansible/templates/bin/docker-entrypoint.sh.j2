@@ -55,6 +55,11 @@ su hive << EOF
   # export HADOOP_HOME={{ hadoop_home }}; export HADOOP_USER_CLASSPATH_FIRST=true; {{ hive_home }}/bin/hive
 EOF
 
+# start up impala
+run_command "service impala-state-store start"
+run_command "service impala-catalog start"
+run_command "service impala-server start"
+
 # finish up
 if [[ $1 == "-daemon" ]]; then
   # hack to daemonize this script, preventing the docker container from exiting

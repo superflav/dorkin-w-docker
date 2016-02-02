@@ -15,6 +15,7 @@
     url: "http://artifactory.corp.atscale.com/ext-packages/java/{{ java_download_file }}"
     checksum: "md5:{{ lookup('file', '{{ download_dir }}/{{ java_download_file }}.md5') }}"
     dest: "{{ download_dir }}/{{ java_download_file }}"
+    timeout: 60
     mode: 0440
 #   register: foo_result
 #
