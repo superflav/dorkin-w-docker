@@ -8,6 +8,7 @@
   user:
     name: hadoop
     group: hadoop
+    shell: /bin/bash
     groups: sudo
     append: yes
     generate_ssh_key: yes
@@ -35,6 +36,7 @@
   user:
     name: hive
     group: hadoop
+    shell: /bin/bash
 
 
 # - name: Create SSH public host key for localhost

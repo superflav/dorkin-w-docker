@@ -17,7 +17,7 @@ WORKDIR  /tmp
 RUN rm -rf ansible/ Dockerfile Makefile README.md
 WORKDIR  /
 
-EXPOSE 50070 8088
+EXPOSE 10500-10520 11111-11199 8088 50070
 
 # ==> Start container w/entrypoint script, defaulting it to running as a daemon
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

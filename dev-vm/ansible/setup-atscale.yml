@@ -1,0 +1,92 @@
+---
+- name: "Create '{{ atscale_user }}' group"
+  group:
+    name: "{{ atscale_user }}"
+    state: present
+
+- name: "Create '{{ atscale_user }}' user"
+  user:
+    name: "{{ atscale_user }}"
+    group: "{{ atscale_user }}"
+    shell: /bin/bash
+
+- name: Create en_US.UTF-8 locale
+  locale_gen: name=en_US.UTF-8
+
+- name: Install AtScale prereq packages via apt
+  package: name={{ item }} state=latest
+  with_items:
+    - zlib1g-dev
+    - libreadline-dev
+    - libdb-dev
+  when: ansible_pkg_mgr == "apt"
+
+- name: Install AtScale prereq packages via yum
+  package: name={{ item }} state=latest
+  with_items:
+    - readline-devel
+    - zlib-devel
+    - db4-devel
+  when: ansible_pkg_mgr == "yum"
+
+- name: Install AtScale prereq packages
+  package: name={{ item }} state=latest
+  with_items:
+    - curl
+    - rsync
+    - unzip
+    - make
+    - gcc
+    - groff # for soelim
+    - groff-base
+
+- name: Create AtScale directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ atscale_user }}"
+    group: "{{ atscale_user }}"
+    mode: 0755
+  with_items:
+    - "{{ atscale_unpack_dir }}"
+    - "{{ atscale_install_dir }}"
+
+- name: Download Installer Checksum
+  get_url:
+    url: "http://artifactory.corp.atscale.com/release-local/com/atscale/installer/installer-dev/{{ atscale_version }}/{{ atscale_download_file }}.md5"
+    dest: "{{ download_dir }}/{{ atscale_download_file }}.md5"
+    force: yes
+    mode: 0440
+
+- name: Download Installer
+  get_url:
+    url: "http://artifactory.corp.atscale.com/release-local/com/atscale/installer/installer-dev/{{ atscale_version }}/{{ atscale_download_file }}"
+    checksum: "md5:{{ lookup('file', '{{ download_dir }}/{{ atscale_download_file }}.md5') }}"
+    dest: "{{ download_dir }}/{{ atscale_download_file }}"
+    timeout: 60
+    mode: 0440
+
+- name: Unpack Installer
+  unarchive:
+    src: "{{ download_dir }}/{{ atscale_download_file }}"
+    copy: no
+    dest: "{{ atscale_unpack_dir }}"
+
+- name: Apply Installer config & license files
+  template:
+    src: "templates/atscale/{{ item }}.j2"
+    dest: "{{ atscale_unpack_dir }}/{{ item }}"
+    owner: "{{ atscale_user }}"
+    group: "{{ atscale_user }}"
+    mode: 0644
+  with_items:
+    - config.yml
+    - dev-vm-license.json
+
+- name: "Chown Installer unpack dir to {{ atscale_user }} user"
+  file:
+    path: "{{ atscale_unpack_dir }}"
+    state: directory
+    owner: "{{ atscale_user }}"
+    group: "{{ atscale_user }}"
+    recurse: yes

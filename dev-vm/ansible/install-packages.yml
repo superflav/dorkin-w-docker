@@ -1,0 +1,14 @@
+---
+- name: Install packages
+  package: name={{ item }} state=latest
+  with_items:
+    - ssh
+    - rsync
+
+- name: Install MySQL
+  package: name={{ item }} state=latest
+  with_items:
+    - python-mysqldb
+    - mysql-server
+    - mysql-client
+    - libmysql-java

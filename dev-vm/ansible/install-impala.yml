@@ -1,5 +1,4 @@
 ---
-
 - name: Download Cloudera apt list file for Ubuntu trusty (14.04)
   get_url:
     url: "https://archive.cloudera.com/cdh5/ubuntu/trusty/amd64/cdh/cloudera.list"
@@ -47,26 +46,26 @@
     mode: 0644
   when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and ansible_distribution_major_version == '7'
 
-# TODO: change to package commands
+## TODO: turn on when Ansible 2.1 is official
+# - name: Add Cloudera APT repository
+#   apt_repository: filename=cloudera state=present
+#
+# - name: Install the Cloudera Impala Packages
+#   package: name={{ item }} state=latest
 - name: Install the Cloudera Impala Packages for Debian OS Family
   apt: name={{ item }} update_cache=yes state=present force=yes
-  # ignore_errors: True
-  # async: 60
-  # poll: 60
   with_items:
     - impala
     - impala-server
     - impala-catalog
     - impala-state-store
     - impala-shell
-  when: ansible_os_family == 'Debian'
+  # when: ansible_os_family == 'Debian'
 
 - name: Apply Hive config files
   template:
     src: "templates/hive-{{ hive_version }}/conf/{{ item }}.j2"
     dest: "{{ impala_conf_dir }}/{{ item }}"
-    # owner: hive
-    # group: hadoop
     mode: 0644
   with_items:
     - hive-site.xml
@@ -75,8 +74,6 @@
   template:
     src: "templates/hadoop-{{ hadoop_version }}/etc/hadoop/{{ item }}.j2"
     dest: "{{ impala_conf_dir }}/{{ item }}"
-    # owner: hadoop
-    # group: hadoop
     mode: 0644
   with_items:
     - core-site.xml
