@@ -17,6 +17,12 @@
   <property>
     <name>yarn.nodemanager.aux-services</name>
     <value>mapreduce_shuffle</value>
+    <description>shuffle service that needs to be set for Map Reduce to run </description>
+  </property>
+  <property>
+    <name>yarn.nodemanager.vmem-check-enabled</name>
+    <value>false</value>
+    <description>Spark trips the vmem because the memory on these nodes are so low, so turn it off for now </description>
   </property>
 
 </configuration>

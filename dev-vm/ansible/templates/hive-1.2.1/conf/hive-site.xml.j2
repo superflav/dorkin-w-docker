@@ -1,5 +1,9 @@
 <configuration>
   <property>
+    <name>hive.metastore.uris</name>
+    <value>thrift://localhost:9083</value>
+  </property>
+  <property>
     <name>javax.jdo.option.ConnectionURL</name>
     <value>jdbc:mysql://localhost/{{ mysql_hive_metastore_db }}?createDatabaseIfNotExist=true</value>
     <description>metadata is stored in a MySQL server</description>

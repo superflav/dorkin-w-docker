@@ -1,16 +1,16 @@
 ---
-as_atscale_host: 172.17.0.2
-is_silent: 'false'
+as_atscale_host: docker.local
+is_silent: 'true'
 as_distro: HDP
 as_use_rpms: 'false'
-as_hive_flavor: atscale-sparksql
-as_hive_flavor_batch: atscale-sparksql
-as_hive_host_interactive: 172.17.0.2
-as_hive_port_interactive: '10511'
+as_hive_flavor: atscale-impala
+as_hive_flavor_batch: atscale-impala
+as_hive_host_interactive: localhost
+as_hive_port_interactive: '21050'
 as_hive_user_interactive: atscale
 as_hive_password_interactive: ''
-as_hive_host_batch: 172.17.0.2
-as_hive_port_batch: '10511'
+as_hive_host_batch: localhost
+as_hive_port_batch: '21050'
 as_hive_user_batch: atscale
 as_hive_password_batch: ''
 as_owner: atscale
@@ -35,9 +35,7 @@ as_license_file: "/tmp/atscale_installer/dev-vm-license.json"
 lzo_jar_location: ''
 as_hive_metastore_database: 'false'
 ruby_bin: "/tmp/puppet/embedded/bin/ruby"
-hadoop_classpath: |
-  /etc/hadoop/conf:/usr/lib/hadoop/lib/*:/usr/lib/hadoop/.//*:/usr/lib/hadoop-hdfs/./:/usr/lib/hadoop-hdfs/lib/*:/usr/lib/hadoop-hdfs/.//*:/usr/lib/hadoop-yarn/lib/*:/usr/lib/hadoop-yarn/.//*:/usr/lib/hadoop-mapreduce/lib/*:/usr/lib/hadoop-mapreduce/.//*
-as_namenode: hdfs://localhost:9000
+as_namenode: localhost
 as_secure_installation: 'false'
 as_is_kerberized: 'false'
 as_hdp_version: '2.6'

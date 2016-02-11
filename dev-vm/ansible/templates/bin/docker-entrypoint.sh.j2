@@ -45,13 +45,15 @@ su hadoop << EOF
   run_command "{{ hadoop_home }}/bin/hdfs dfs -chmod g+w /user/hive/warehouse"
 EOF
 
-# init metastore schema
+# init metastore schema & start the metastore interface
 su hive << EOF
   export HADOOP_HOME={{ hadoop_home }}
   export HIVE_HOME={{ hive_home }}
+  export HIVE_CONF_DIR={{ hive_home }}/conf
   export HADOOP_USER_CLASSPATH_FIRST=true
 
   run_command "{{ hive_home }}/bin/schematool -dbType mysql -initSchema"
+  run_command "{{ hive_home }}/bin/hive --service metastore &"
   # export HADOOP_HOME={{ hadoop_home }}; export HADOOP_USER_CLASSPATH_FIRST=true; {{ hive_home }}/bin/hive
 EOF
 
@@ -59,6 +61,11 @@ EOF
 run_command "service impala-state-store start"
 run_command "service impala-catalog start"
 run_command "service impala-server start"
+
+# install atscale
+su atscale << EOF
+  run_command "{{ atscale_unpack_dir }}/bin/install -l {{ atscale_unpack_dir }}/dev-vm-license.json  -c {{ atscale_unpack_dir }}/config.yml"
+EOF
 
 # finish up
 if [[ $1 == "-daemon" ]]; then

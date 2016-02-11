@@ -34,30 +34,22 @@
       <name>dfs.namenode.safemode.extension</name>
       <value>0</value>
   </property>
+
+  <!-- configure impala short-circuit reads -->
   <!-- <property>
+      <name>dfs.client.read.shortcircuit</name>
+      <value>true</value>
+  </property>
+  <property>
       <name>dfs.domain.socket.path</name>
       <value>/var/run/hadoop-hdfs/dn._PORT</value>
-  </property> -->
+  </property>
   <property>
       <name>dfs.client.file-block-storage-locations.timeout.millis</name>
       <value>10000</value>
-  </property>
-  <!-- <property>
-     <name>dfs.client.use.legacy.blockreader.local</name>
-     <value>true</value>
   </property> -->
-  <!-- <property>
-     <name>dfs.datanode.data.dir.perm</name>
-     <value>750</value>
-  </property> -->
-  <!-- <property>
-     <name>dfs.block.local-path-access.user</name>
-     <value><%= scope.lookupvar('::as_owner') %></value>
-  </property> -->
-  <property>
-      <name>dfs.client.file-block-storage-locations.timeout.millis</name>
-      <value>10000</value>
-  </property>
+
+  <!-- enable impala block location tracking -->
   <property>
     <name>dfs.datanode.hdfs-blocks-metadata.enabled</name>
     <value>true</value>
