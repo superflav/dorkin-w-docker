@@ -15,7 +15,7 @@ as_hive_user_batch: atscale
 as_hive_password_batch: ''
 as_owner: atscale
 as_group: atscale
-as_install_directory: "{{ atscale_install_dir }}"
+as_install_directory: "{{ atscale_home }}"
 as_engine_memory: 1G
 as_hadoop_common_home: "{{ hadoop_home }}/"
 as_hadoop_libexec: "{{ hadoop_home }}/libexec"
@@ -35,7 +35,7 @@ as_license_file: "/tmp/atscale_installer/dev-vm-license.json"
 lzo_jar_location: ''
 as_hive_metastore_database: 'false'
 ruby_bin: "/tmp/puppet/embedded/bin/ruby"
-as_namenode: localhost
+as_namenode: ''
 as_secure_installation: 'false'
 as_is_kerberized: 'false'
 as_hdp_version: '2.6'

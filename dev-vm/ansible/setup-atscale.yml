@@ -49,7 +49,7 @@
     mode: 0755
   with_items:
     - "{{ atscale_unpack_dir }}"
-    - "{{ atscale_install_dir }}"
+    - "{{ atscale_home }}"
 
 - name: Download Installer Checksum
   get_url:

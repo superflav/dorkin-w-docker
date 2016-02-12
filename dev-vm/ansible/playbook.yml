@@ -6,11 +6,11 @@
     download_dir: /tmp/download
     share_dir: /usr/local/share
 
-    atscale_unpack_dir: /tmp/atscale_installer
-    atscale_install_dir: /usr/local/atscale
-    atscale_version: 3.1.0.12
-    atscale_download_file: "installer-offline-dev-{{ atscale_version }}.tar.gz"
+    atscale_version: 3.1.1.20
+    atscale_download_file: "installer-offline-apache2_6-dev-{{ atscale_version }}.tar.gz"
     atscale_user: atscale
+    atscale_home: /usr/local/atscale
+    atscale_unpack_dir: /tmp/atscale_installer
 
     java_version: 1.8.0_71
     java_download_file: jdk-8u71-linux-x64.gz
