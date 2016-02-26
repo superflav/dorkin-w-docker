@@ -34,7 +34,7 @@
 
 - name: Download Cloudera repo file for RHEL or CentOS 6
   get_url:
-    url: "https://archive.cloudera.com/cdh5/redhat/6/x86_64/cdh/cloudera-manager.repo"
+    url: "https://archive.cloudera.com/cdh5/redhat/6/x86_64/cdh/cloudera-cdh5.repo"
     dest: "/etc/yum.repos.d/"
     mode: 0644
   when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and ansible_distribution_major_version == '6'
@@ -60,7 +60,17 @@
     - impala-catalog
     - impala-state-store
     - impala-shell
-  # when: ansible_os_family == 'Debian'
+  when: ansible_os_family == 'Debian'
+
+- name: Install the Cloudera Impala Packages for RedHat OS Family
+  yum: name={{ item }} update_cache=yes state=present
+  with_items:
+    - impala
+    - impala-server
+    - impala-catalog
+    - impala-state-store
+    - impala-shell
+  when: ansible_os_family == 'RedHat'
 
 - name: Apply Hive config files
   template:

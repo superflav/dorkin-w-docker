@@ -1,0 +1,3 @@
+---
+command_ssh_start: "service sshd start"
+command_mysql_start: "service mysqld start"

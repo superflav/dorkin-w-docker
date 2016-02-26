@@ -9,7 +9,8 @@
 - name: Download Hive
   get_url:
     url: "http://artifactory.corp.atscale.com/ext-packages/hive/{{ hive_download_file }}"
-    checksum: "md5:{{ lookup('file', '{{ download_dir }}/{{ hive_download_file }}.md5') }}"
+    # TODO: put this back in once EPEL gets Ansible 2.x
+    # checksum: "md5:{{ lookup('file', '{{ download_dir }}/{{ hive_download_file }}.md5') }}"
     dest: "{{ download_dir }}/{{ hive_download_file }}"
     timeout: 60
     mode: 0440

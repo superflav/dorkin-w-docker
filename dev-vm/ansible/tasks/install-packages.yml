@@ -1,0 +1,36 @@
+---
+## use apt to install for Debian & Ubuntu
+- name: Install packages via apt
+  apt: name={{ item }} update_cache=yes state=present force=yes
+  with_items:
+    - ssh
+    - rsync
+  when: ansible_os_family == 'Debian'
+
+- name: Install MySQL via apt
+  apt: name={{ item }} update_cache=yes state=present force=yes
+  with_items:
+    - python-mysqldb
+    - mysql-server
+    - mysql-client
+    - libmysql-java
+  when: ansible_os_family == 'Debian'
+
+## use yum to install for CentOS & RedHat
+- name: Install packages via yum
+  yum: name={{ item }} update_cache=yes state=present
+  with_items:
+    - openssh-server
+    - openssh-clients
+    - rsync
+    - tar
+  when: ansible_os_family == 'RedHat'
+
+- name: Install MySQL via yum
+  yum: name={{ item }} update_cache=yes state=present
+  with_items:
+    - MySQL-python
+    - mysql-server
+    - mysql
+    - mysql-connector-java
+  when: ansible_os_family == 'RedHat'

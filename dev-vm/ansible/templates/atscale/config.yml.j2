@@ -1,5 +1,5 @@
 ---
-as_atscale_host: docker.local
+as_atscale_host: {{ atscale_host_name }}
 is_silent: 'true'
 as_distro: HDP
 as_use_rpms: 'false'
@@ -31,7 +31,7 @@ as_postgres_port: '5433'
 hll_enabled: 'true'
 hll_create_jar: 'true'
 as_drill_to_raw_query_limit_optional: 'false'
-as_license_file: "/tmp/atscale_installer/dev-vm-license.json"
+as_license_file: "{{ atscale_installer_dir }}/dev-vm-license.json"
 lzo_jar_location: ''
 as_hive_metastore_database: 'false'
 ruby_bin: "/tmp/puppet/embedded/bin/ruby"

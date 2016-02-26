@@ -2,38 +2,19 @@
 # hadoop single node install: https://hadoop.apache.org/docs/r1.2.1/single_node_setup.html
 
 - hosts: all
-  vars:
-    download_dir: /tmp/download
-    share_dir: /usr/local/share
-
-    atscale_version: 3.1.1.20
-    atscale_download_file: "installer-offline-apache2_6-dev-{{ atscale_version }}.tar.gz"
-    atscale_user: atscale
-    atscale_home: /usr/local/atscale
-    atscale_unpack_dir: /tmp/atscale_installer
-
-    java_version: 1.8.0_71
-    java_download_file: jdk-8u71-linux-x64.gz
-    java_home: "{{ share_dir }}/jdk{{ java_version }}"
-
-    hadoop_version: 2.6.3
-    hadoop_download_file: "hadoop-{{ hadoop_version }}.tar.gz"
-    hadoop_home: "{{ share_dir }}/hadoop-{{ hadoop_version }}"
-    hadoop_conf_dir: "{{ hadoop_home }}/etc/hadoop"
-
-    hive_version: 1.2.1
-    hive_download_file: apache-hive-{{ hive_version }}-bin.tar.gz
-    hive_home: "{{ share_dir }}/apache-hive-{{ hive_version }}-bin"
-    hive_conf_dir: "{{ hive_home }}/conf"
-    hive_lib_dir: "{{ hive_home }}/lib"
-
-    impala_conf_dir: /etc/impala/conf
-
-    mysql_hive_metastore_db: metastore
-    mysql_hive_metastore_user: hive
-    mysql_hive_metastore_password: hive
-
+  vars: # use include_vars
   tasks:
+    - name: include_vars common
+      include_vars: vars/common.yml
+
+    - name: include_vars for OS family Debian
+      include_vars: vars/os_family_debian.yml
+      when: ansible_os_family == 'Debian'
+
+    - name: include_vars for OS family RedHat
+      include_vars: vars/os_family_redhat.yml
+      when: ansible_os_family == 'RedHat'
+
     - name: Create directories
       file:
         path: "{{ item }}"
@@ -44,25 +25,25 @@
         - "{{ share_dir }}"
 
     - name: Install packages
-      include: install-packages.yml
+      include: tasks/install-packages.yml
 
     - name: Create users
-      include: create-users.yml
+      include: tasks/create-users.yml
 
     - name: Install Java
-      include: "install-java.yml"
+      include: tasks/install-java.yml
 
     - name: Install Hadoop
-      include: "install-hadoop.yml"
+      include: tasks/install-hadoop.yml
 
     - name: Install Hive
-      include: "install-hive.yml"
+      include: tasks/install-hive.yml
 
     - name: Install Impala
-      include: "install-impala.yml"
+      include: tasks/install-impala.yml
 
     - name: Setup AtScale
-      include: setup-atscale.yml
+      include: tasks/setup-atscale.yml
 
     - name: Clean up files & directories that are no longer needed
       file:

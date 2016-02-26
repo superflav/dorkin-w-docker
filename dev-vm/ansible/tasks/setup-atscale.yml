@@ -12,25 +12,10 @@
 
 - name: Create en_US.UTF-8 locale
   locale_gen: name=en_US.UTF-8
+  when: ansible_os_family == 'Debian'
 
 - name: Install AtScale prereq packages via apt
-  package: name={{ item }} state=latest
-  with_items:
-    - zlib1g-dev
-    - libreadline-dev
-    - libdb-dev
-  when: ansible_pkg_mgr == "apt"
-
-- name: Install AtScale prereq packages via yum
-  package: name={{ item }} state=latest
-  with_items:
-    - readline-devel
-    - zlib-devel
-    - db4-devel
-  when: ansible_pkg_mgr == "yum"
-
-- name: Install AtScale prereq packages
-  package: name={{ item }} state=latest
+  apt: name={{ item }} update_cache=yes state=present force=yes
   with_items:
     - curl
     - rsync
@@ -39,6 +24,24 @@
     - gcc
     - groff # for soelim
     - groff-base
+    - zlib1g-dev
+    - libreadline-dev
+    - libdb-dev
+  when: ansible_os_family == 'Debian'
+
+- name: Install AtScale prereq packages via yum
+  yum: name={{ item }} update_cache=yes state=present
+  with_items:
+    - curl
+    - rsync
+    - unzip
+    - make
+    - gcc
+    - groff # for soelim
+    - readline-devel
+    - zlib-devel
+    - db4-devel
+  when: ansible_os_family == 'RedHat'
 
 - name: Create AtScale directories
   file:
@@ -48,20 +51,22 @@
     group: "{{ atscale_user }}"
     mode: 0755
   with_items:
-    - "{{ atscale_unpack_dir }}"
     - "{{ atscale_home }}"
+    - "{{ atscale_installer_dir }}"
+    - "{{ atscale_installer_unpack_dir }}"
 
 - name: Download Installer Checksum
   get_url:
-    url: "http://artifactory.corp.atscale.com/release-local/com/atscale/installer/installer-dev/{{ atscale_version }}/{{ atscale_download_file }}.md5"
+    url: "http://artifactory.corp.atscale.com/release-local/com/atscale/installer/installer{{ atscale_flavor }}/{{ atscale_version }}/{{ atscale_download_file }}.md5"
     dest: "{{ download_dir }}/{{ atscale_download_file }}.md5"
     force: yes
     mode: 0440
 
 - name: Download Installer
   get_url:
-    url: "http://artifactory.corp.atscale.com/release-local/com/atscale/installer/installer-dev/{{ atscale_version }}/{{ atscale_download_file }}"
-    checksum: "md5:{{ lookup('file', '{{ download_dir }}/{{ atscale_download_file }}.md5') }}"
+    url: "http://artifactory.corp.atscale.com/release-local/com/atscale/installer/installer{{ atscale_flavor }}/{{ atscale_version }}/{{ atscale_download_file }}"
+    # TODO: put this back in once EPEL gets Ansible 2.x
+    # checksum: "md5:{{ lookup('file', '{{ download_dir }}/{{ atscale_download_file }}.md5') }}"
     dest: "{{ download_dir }}/{{ atscale_download_file }}"
     timeout: 60
     mode: 0440
@@ -70,12 +75,12 @@
   unarchive:
     src: "{{ download_dir }}/{{ atscale_download_file }}"
     copy: no
-    dest: "{{ atscale_unpack_dir }}"
+    dest: "{{ atscale_installer_unpack_dir }}"
 
 - name: Apply Installer config & license files
   template:
     src: "templates/atscale/{{ item }}.j2"
-    dest: "{{ atscale_unpack_dir }}/{{ item }}"
+    dest: "{{ atscale_installer_dir }}/{{ item }}"
     owner: "{{ atscale_user }}"
     group: "{{ atscale_user }}"
     mode: 0644
@@ -83,9 +88,9 @@
     - config.yml
     - dev-vm-license.json
 
-- name: "Chown Installer unpack dir to {{ atscale_user }} user"
+- name: "Chown Installer dir to {{ atscale_user }} user"
   file:
-    path: "{{ atscale_unpack_dir }}"
+    path: "{{ atscale_installer_dir }}"
     state: directory
     owner: "{{ atscale_user }}"
     group: "{{ atscale_user }}"

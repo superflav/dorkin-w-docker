@@ -5,22 +5,15 @@
     dest: "{{ download_dir }}/{{ java_download_file }}.md5"
     force: yes
     mode: 0440
-#   register: foo_result
-#
-# - debug: var=foo_result
-# - debug: var=foo_result.md5sum
 
 - name: Download Java
   get_url:
     url: "http://artifactory.corp.atscale.com/ext-packages/java/{{ java_download_file }}"
-    checksum: "md5:{{ lookup('file', '{{ download_dir }}/{{ java_download_file }}.md5') }}"
+    # TODO: put this back in once EPEL gets Ansible 2.x
+    # checksum: "md5:{{ lookup('file', '{{ download_dir }}/{{ java_download_file }}.md5') }}"
     dest: "{{ download_dir }}/{{ java_download_file }}"
     timeout: 60
     mode: 0440
-#   register: foo_result
-#
-# - debug: var=foo_result
-# - debug: var=foo_result.md5sum
 
 - name: Unpack Java
   unarchive:
