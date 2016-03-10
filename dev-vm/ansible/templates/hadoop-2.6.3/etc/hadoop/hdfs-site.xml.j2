@@ -36,9 +36,9 @@
   </property>
 
   <!-- configure impala short-circuit reads -->
-  <!-- <property>
+  <property>
       <name>dfs.client.read.shortcircuit</name>
-      <value>true</value>
+      <value>false</value><!-- leave as false in single node cluster mode -->
   </property>
   <property>
       <name>dfs.domain.socket.path</name>
@@ -47,7 +47,7 @@
   <property>
       <name>dfs.client.file-block-storage-locations.timeout.millis</name>
       <value>10000</value>
-  </property> -->
+  </property>
 
   <!-- enable impala block location tracking -->
   <property>

@@ -2,9 +2,9 @@
 download_dir: /tmp/download
 share_dir: /usr/local/share
 
-atscale_version: 3.1.3.43
+atscale_version: 3.1.3.55
 atscale_flavor: "-dev"
-atscale_download_file: "installer-offline-apache2_6-{{ atscale_version }}{{ atscale_flavor }}.tar.gz"
+atscale_download_file: "installer-offline-{{ atscale_version }}{{ atscale_flavor }}.tar.gz"
 atscale_user: atscale
 atscale_home: /usr/local/atscale
 atscale_installer_dir: /tmp/atscale_installer
