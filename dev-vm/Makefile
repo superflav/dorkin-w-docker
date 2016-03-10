@@ -47,7 +47,16 @@ tag: init
 ####
 ## intialization & debugging targets
 ####
-init: set_dir
+init: check_docker set_dir
+
+check_docker:
+	@if ! docker ps; then \
+		echo ""; \
+		echo "Try running this 1st:"; \
+		echo "./bin/docker-machine-create.sh; source ./bin/update-docker-host.sh"; \
+		echo ""; \
+		exit 1; \
+	fi
 
 set_dir:
 	@if [ -z "${OS}" ]; then \
