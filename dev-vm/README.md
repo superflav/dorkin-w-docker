@@ -1,26 +1,137 @@
 # Running dev-vm in Docker
 
-## Set up Docker (OS X only for now)
 
-### Install Docker Toolbox
+## Set up Docker
+
+### OS X
+
+#### Install Docker
+
+Ths simplest way to get going with running dev-vm on OS X is to just install
+the Docker Toolbox:
 
 https://www.docker.com/products/docker-toolbox
 
-### Install VirtualBox
+For more in-depth details on running Docker on OS X, see the full docs:
 
-https://www.virtualbox.org/
+https://docs.docker.com/mac/
 
-### Use docker-machine to create `dev` VM
+#### Set up Docker Engine and configure environment
 
-Run the following command to create a Virtualbox VM in which the Docker daemon will run.
+On OS X the Docker Engine runs inside a VM, which is managed by Docker Machine.
+Open a terminal window and run the following to:
 
-    docker-machine create -d virtualbox --virtualbox-memory=6144 --virtualbox-cpu-count=4 dev
+1. Create a `dev` machine
+2. Configure the terminal's environment for Docker
+3. Register the `dev` machine's ip address in /etc/hosts as `docker.local`
 
-### Update your env to use Docker
 
-You'll need to run this in every terminal window that you're Dockering from, which can be a pain, so you can alternatively add it to your `~/.profile`
+    source ./bin/update-docker-host.sh
 
-    ./bin/update-docker-host.sh
+Sourcing this file is idempotent, and you will need to run it in each OS X
+terminal window that you want configured to work with Docker. This can be done
+manually or add is as a line to your `~/.profile` or equivalent.
+
+### Linux
+
+#### Install Docker
+
+https://docs.docker.com/linux/
+
+#### Configure environment
+
+In keeping consistent w/running dev-vm on OS, this registers 127.0.0.1 in
+/etc/hosts as `docker.local`. Only need to be run if you want to access dev-vm
+via `docker.local` rather than `localhost`.
+
+    source ./bin/update-docker-host.sh
+
+
+## Make all the things
+
+The `Makefile` in this directory wraps most of the common commands that are
+needed in order build & run a standalone Hadoop cluster w/AtScale installed.
+
+Most of the make targets require that the `OS` param is set. `OS` is used to
+specify the operating system against which the make target will be run. The
+currently supported operating systems are `centos6` and `ubuntu14.04`, both of
+which have implementation details contained within their respectively named
+sub-directory.
+
+### Build image
+
+    make OS=<operating_system> build
+
+### Run container & drop into shell from built image
+
+    make OS=<operating_system> run
+
+### SSH into running container
+
+    make OS=<operating_system> ssh
+
+### Print out Makefile debugging info
+
+    make OS=<operating_system> debug
+
+### Other useful make commands
+
+#### Run container in detached (daemon) mode from built image
+
+    make OS=<operating_system> run-daemon
+
+#### Stop running container
+
+    make OS=<operating_system> stop
+
+#### Clean exited containers & untagged images
+
+    make OS=<operating_system> clean
+
+
+## Build & run a standalone Hadoop cluster w/AtScale installed
+
+OK, so Docker is set up and you've seen a bunch of the make commands. Now let's
+put them to use and spin up a dev-vm instance. For this example, we'll be using
+`OS=centos6`, but feel free to use any of the supported OSes.
+
+### Build the image
+
+AtScale doesn't yet have a private Docker registry, so you're going to have to build images yourself for now. This will take ~10-15 minutes when in the office, and much longer when VPNed in.
+
+    make OS=centos6 build
+
+
+
+
+### Run container & drop into shell from built image
+
+    make OS=centos6 run
+
+### SSH into the container
+
+
+### Point your browser at some things
+
+http://docker.local:10500
+
+
+### Run `query-tester` tests
+
+Pull down the latest: https://github.com/AtScaleInc/query-tester
+
+And then run:
+
+    sbt "run -g smoke --host docker.local"
+
+
+### Upload a new installer
+
+
+
+
+----
+
 
 ### Useful docker-machine commands
 
@@ -42,52 +153,11 @@ You'll need to run this in every terminal window that you're Dockering from, whi
     # Display docker-machine help
     docker-machine help
 
-## Build & run a standalone Hadoop cluster w/AtScale installed
-
-The `Makefile` in this directory wraps most of the common commands that are needed in order build & run a standalone Hadoop cluster w/AtScale installed.
-
-Many of the make targets require that the `OS` param is set. `OS` is used to specify the operating system against which the make target will be run. The currently supported operating systems are `centos6` and `ubuntu14.04`, both of which have implementation details contained within their respectively named sub-directory.
-
-#### Build image
-
-    make OS=<operating_system>
-
-#### Run container from built image
-
-    make OS=<operating_system> run
-
-#### ssh into running container
-
-    make OS=<operating_system> ssh
-
-#### Stop running container
-
-    make OS=<operating_system> stop
-
-#### Print out useful Makefile debugging info
-
-    make OS=<operating_system> debug
-
-## Run `query-tester` tests
-
-Pull down the latest: https://github.com/AtScaleInc/query-tester
-
-And then run:
-
-    sbt "run -g smoke --host docker.local"
-
 
 
 ## Dockered Hadoop
 
 http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/SingleCluster.html
 
-
 NameNode - http://localhost:50070/
 ResourceManager - http://localhost:8088/
-
-
-## TODO
-
-* http://cavaliercoder.com/blog/update-etc-hosts-for-docker-machine.html
-* https://github.com/bamarni/docker-machine-dns
