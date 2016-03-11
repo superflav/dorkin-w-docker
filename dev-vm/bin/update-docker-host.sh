@@ -1,26 +1,44 @@
 #!/bin/bash
+SOURCED=$_ # $_ at the beginning of script will contain location if file was sourced
+DIR_NAME=$(dirname ${BASH_SOURCE})
+if [ "${SOURCED}" == "$0" ]; then
+  echo ""
+  echo "ERROR: looks like you're running this script, when you really should be sourcing it."
+  echo "Try again, but like this:"
+  echo ""
+  echo "source ${DIR_NAME}/update-docker-host.sh"
+  echo ""
+  exit 1
+fi
 
 MACHINE_NAME=${MACHINE_NAME:-"dev"}
 
+####
+## set DOCKER_HOST_NAME env var
+####
 export DOCKER_HOST_NAME="docker.local"
 
 ####
 # set DOCKER_IP env var
 ####
-if which docker-machine; then
+if which -s docker-machine; then
   # docker engine accessible via docker-machine (osx, windows)
 
-  # if this is good, run the rest
-  docker-machine status ${MACHINE_NAME}
+  # make sure machine has been created
+  ${DIR_NAME}/docker-machine-create.sh
 
+  # get a status on the machine
+  docker-machine status ${MACHINE_NAME}
   if [ $? -eq 0 ]; then
+    # staus was good
     # configure shell w/DOCKER env vars
     eval "$(docker-machine env ${MACHINE_NAME})"
 
     # export ip of running machine
     export DOCKER_IP=$(docker-machine ip ${DOCKER_MACHINE_NAME})
   else
-    echo "docker-machine host '${MACHINE_NAME}' does not exist. Try running $(dirname $0)/docker-machine-create.sh first."
+    # status was bad
+    echo "docker-machine host '${MACHINE_NAME}' does not exist. Try running ${DIR_NAME}/docker-machine-create.sh first."
     unset DOCKER_IP
   fi
 else

@@ -24,7 +24,7 @@ build: init clean
 run: init clean
 	docker run --rm -it ${HOSTS_TO_ADD} ${PORTS_TO_PUBLISH} ${IMAGE_NAME} /bin/bash
 
-# run a container using the image in detatched (daemon) mode
+# run a container using the image in detached (daemon) mode
 run-daemon: init clean
 	docker run -d ${PORTS_TO_PUBLISH} ${IMAGE_NAME}
 
@@ -50,10 +50,10 @@ tag: init
 init: check_docker set_dir
 
 check_docker:
-	@if ! docker ps; then \
+	@if ! docker ps -q; then \
 		echo ""; \
-		echo "Try running this 1st:"; \
-		echo "./bin/docker-machine-create.sh; source ./bin/update-docker-host.sh"; \
+		echo "Try running this command in the current terminal window 1st:"; \
+		echo "source ./bin/update-docker-host.sh"; \
 		echo ""; \
 		exit 1; \
 	fi
