@@ -2,7 +2,7 @@
 download_dir: /tmp/download
 share_dir: /usr/local/share
 
-atscale_version: 3.1.3.55
+atscale_version: 3.2.1.61
 atscale_flavor: "-dev"
 atscale_download_file: "installer-offline-{{ atscale_version }}{{ atscale_flavor }}.tar.gz"
 atscale_user: atscale

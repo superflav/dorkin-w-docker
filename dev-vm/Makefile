@@ -10,6 +10,8 @@ DOCKERFILE := Dockerfile
 PORTS_TO_PUBLISH := -p 10500-10520:10500-10520 -p 11111-11199:11111-11199 -p 8088:8088 -p 50070:50070
 # list of host:ip which will be added to the container's /etc/hosts file
 HOSTS_TO_ADD := --add-host=${DOCKER_HOST_NAME}:${DOCKER_IP}
+# default ssh user, can be overridden on the CLI, like SSH_USER=root
+SSH_USER ?= atscale
 
 ####
 ## Image and container-specific targets
@@ -30,7 +32,7 @@ run-daemon: init clean
 
 # ssh into the running container
 ssh: init
-	docker exec -it ${CONTAINER_ID} /bin/bash;
+	docker exec -u ${SSH_USER} -it ${CONTAINER_ID} /bin/bash;
 
 # stop the running container
 stop: init
