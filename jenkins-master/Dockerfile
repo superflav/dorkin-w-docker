@@ -1,5 +1,4 @@
 FROM jenkins:1.625.3
-MAINTAINER Chris Fraser
 
 USER root
 
